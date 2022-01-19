@@ -59,6 +59,26 @@
 			color:  red;
 			font-size: 20px;
 		}
+
+        #search-table {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        #search-table td, #search-table th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #search-table tr:nth-child(even){background-color: #f2f2f2;}
+        #search-table tr:hover {background-color: #ddd;}
+        #search-table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
 </style>
 
 </head>
@@ -363,15 +383,50 @@
   <!-- -->
 
 <!-- Search Tab Pane -->
+<script type="text/javascript">
+function do_search()
+{
+ //var idsubject_search=$("#idsubject_search").val();
+ var form = "#searchSubForm"; // defined the #form ID
+ var formData = $(form).serializeArray(); // serialize the form into array
+ $.ajax
+ ({
+  type:'post',
+  url:'searchSubject.php',
+  data:formData,
+  success:function(response) 
+  {
+    var answer = JSON.parse(response);
+        switch (answer.status_response) {
+          case "success":
+            document.getElementById("search_result").innerHTML=answer.message_response;
+            break;
+
+          case "error":
+            Swal.fire({
+              icon: "warning",
+              title: answer.message_response
+            });
+            break;
+        }
+  }
+
+  
+ });
+ 
+ return false;
+}
+</script>
+
 <div class="tab-pane" id="searchTab">
 	<br>
-	<form method="post" action="./searchSubject.php" id="searchSubForm">
+	<form method="post" action="./searchSubject.php" id="searchSubForm" onSubmit="return do_search();">
 		MRI ID: <input type="text" name="idsubject_search">
 		Age range: Min <input type="number" name="ageMin_search" style="width: 4em"> Max <input type="number" name="ageMax_search" style="width: 4em">
 		Sex:
-		<input type="checkbox" id="female" name="sex_search" value=0>
+		<input type="checkbox" id="female" name="sex_search[]" value=0>
 		<label for="female">Female</label>
-		<input type="checkbox" id="male" name="sex_search" value=1>
+		<input type="checkbox" id="male" name="sex_search[]" value=1>
 		<label for="male">Male</label>
 		Education: Min <input type="number" name="educationMin_search" style="width: 4em"> Max <input type="number" name="educationMax_search" style="width: 4em"><br><br>
 		Project: 
@@ -463,7 +518,7 @@
         </select><br><br>
 
 		Scales:
-		<select name="scanner_search[]" multiple>
+		<select name="scales_search[]" multiple>
 		<?php 
                 // use a while loop to fetch data 
                 // from the $all_categories variable 
@@ -486,7 +541,7 @@
         </select>
 
 		Biological Measures:
-		<select name="scanner_search[]" multiple>
+		<select name="biomeasures_search[]" multiple>
 		<?php 
                 // use a while loop to fetch data 
                 // from the $all_categories variable 
@@ -510,7 +565,29 @@
 		<input type="submit" name="search" value="Search" id="btnSubjectSearch">
 	</form>
 	<br><br>
-	<div id="search_result"></div>
+	<div>
+        <table id="search-table">
+            <thead>
+            <tr>
+                <th>MRI ID</th>
+                <th>Age</th>
+                <th>Sex</th>
+                <th>Education</th>
+                <th>Project</th>
+                <th>Group</th>
+                <th>Scanner</th>
+                <th>Scans</th>
+                <th>Scales</th>
+                <th>Biological Measures</th>
+            </tr>
+            </thead>
+            <tbody id="search_result">
+
+            </tbody>
+            
+            
+        </table>
+    </div>
 
 </div>
 

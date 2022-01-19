@@ -73,32 +73,6 @@ function resetForm(selector) {
   $(selector)[0].reset();
 }
 
-function search() {
-  $("#btnSubjectSearch").on("click", function () {
-    // var $this = $(this); // submit button selector using ID
-    // var $caption = $this.html(); // We store the html content of the submit button
-    var form = "#searchSubForm"; // defined the #form ID
-    var formData = $(form).serializeArray(); // serialize the form into array
-    var route = $(form).attr("action"); // get the route using attribute action
-
-    if (!empty(formData)) {
-      // Ajax config
-      $.ajax({
-        type: "POST", // we are using POST method to submit the data to the server side
-        url: route, // get the route value
-        data: formData, // our serialized array data for server side
-
-        success: function (data) {
-          $("#search_result").html(data);
-          $("#search_result").css("display", "block");
-        },
-      });
-    } else {
-      $("#search_result").css("display", "none");
-    }
-  });
-}
-
 $(document).ready(function () {
   // General function to submit form
   submit();
@@ -111,7 +85,4 @@ $(document).ready(function () {
   submitScan();
   submitScale();
   submitBioMeasure();
-
-  // Function to search database
-  search();
 });
